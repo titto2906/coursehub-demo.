@@ -107,7 +107,7 @@ def list_student_enrollments(student_id: str) -> list[dict[str, object]]:
             c.name AS course_name,
             e.registered_at
         FROM enrollments AS e
-        JOIN students AS s ON s.id = e.student_id
+        JOIN students AS s ON s.id = e.student_is
         JOIN class_sections AS cs ON cs.id = e.class_section_id
         JOIN courses AS c ON c.code = cs.course_code
         WHERE e.student_id = :student_id
@@ -226,3 +226,17 @@ def delete_enrollment(student_id: str, class_section_id: str) -> Response:
                 detail="Khong tim thay dang ky can huy",
             )
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+@app.get("/lectures")
+def list_lectures() -> list[dict[str, object]]:
+    sql = """
+        SELECT id, name
+        FROM lecturers
+        ORDER BY id;
+    """
+    parameters: dict[str, object] = {}
+
+    with engine.connect() as connection:
+        rows = connection.execute(text(sql), parameters).mappings().all()
+    
+    return [dict(row) for row in rows]
