@@ -24,9 +24,9 @@ enrollments = [
     {"student_id": "22000001", "course_code": "INT2204"}
 ]
 
-for course in courses:
-    remaining = course["capacity"] - course["enrolled"]
-    print(course["code"], "- con", remaining, "cho")
+# for course in courses:
+#     remaining = course["capacity"] - course["enrolled"]
+#     print(course["code"], "- con", remaining, "cho")
     
 def find_course(course_code):
     for course in courses:
@@ -34,7 +34,7 @@ def find_course(course_code):
             return course
     return None
 
-print(find_course("INT2204"))
+# print(find_course("INT2204"))
 
 def can_enroll(student_id, course_code):
     course = find_course(course_code)
@@ -53,13 +53,13 @@ def can_enroll(student_id, course_code):
     
     return True, "Co the dang ky"
 
-print(can_enroll("22000002", "INT2204"))
+# print(can_enroll("22000002", "INT2204"))
 
-try:
-    limit = int(input("Nhap so luong hoc phan muon hien thi: "))
-    print(courses[:limit])
-except ValueError:
-    print("So luong phai la so nguyen")
+# try:
+#     limit = int(input("Nhap so luong hoc phan muon hien thi: "))
+#     print(courses[:limit])
+# except ValueError:
+#     print("So luong phai la so nguyen")
     
 def search_courses(keyword):
     normalized = keyword.strip().lower()
@@ -71,4 +71,31 @@ def search_courses(keyword):
         results.append(course)
     return results
 
-print(search_courses("web"))
+# print(search_courses("web"))
+
+# HOMEWORK SECTION:
+
+def enroll_student(student_id, course_code):
+    if not any(student["id"] == student_id for student in students):
+            return "Sinh vien khong ton tai"
+        
+    if not any(course["code"] == course_code for course in courses):
+        return "Hoc phan khong ton tai"
+    
+    course = find_course(course_code)
+    
+    if course["capacity"] <= course["enrolled"]:
+        return "Lop da du so luong"
+    
+    if any(item["student_id"] == student_id and item["course_code"] == course_code for item in enrollments):
+        return "Sinh vien da dang ky hoc phan nay"
+    
+    enrollments.append({"student_id": student_id, "course_code": course_code})
+    course["enrolled"] += 1
+    return "Dang ky thanh cong"
+
+print(enroll_student("22000002", "INT2204")) # Expected: "Dang ky thanh cong"
+print(enroll_student("22000001", "INT2204")) # Expected: "Sinh vien da dang ky hoc phan nay"
+print(enroll_student("22000002", "INT2205")) # Expected: "Lop da du so luong"
+print(enroll_student("22000002", "INT2206")) # Expected: "Hoc phan khong ton tai"
+print(enroll_student("22000003", "INT2204")) # Expected: "Sinh vien khong ton tai"
