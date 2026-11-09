@@ -1,5 +1,7 @@
 .venv
 .env
-backend/__pycache__/__init__.cpython-313.pyc
-backend/app/__pycache__/database.cpython-313.pyc
-backend/app/__pycache__/main.cpython-313.pyc
+.env.local
+node_modules/
+dist/
+__pycache__/
+*.pyc

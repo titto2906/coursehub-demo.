@@ -6,12 +6,22 @@ from sqlalchemy import text
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from .database import engine
 from .schemas import EnrollmentCreate
+from fastapi.middleware.cors import CORSMiddleware
 
 logger = logging.getLogger(__name__)
 app = FastAPI(
     title="CourseHub API",
     version="0.4.0",
     description="API thuc hanh Buoi 4 - transaction, locking va hieu nang",
+)
+
+# Buoi 5: chi cho phép frontend local goi API qua trinh duyet.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "DELETE"],
+    allow_headers=["Content-Type"],
 )
 
 @app.get("/")
@@ -107,7 +117,7 @@ def list_student_enrollments(student_id: str) -> list[dict[str, object]]:
             c.name AS course_name,
             e.registered_at
         FROM enrollments AS e
-        JOIN students AS s ON s.id = e.student_is
+        JOIN students AS s ON s.id = e.student_id
         JOIN class_sections AS cs ON cs.id = e.class_section_id
         JOIN courses AS c ON c.code = cs.course_code
         WHERE e.student_id = :student_id
